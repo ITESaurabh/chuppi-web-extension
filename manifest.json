@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
-  "name": "name in manifest.json",
-  "description": "description in manifest.json",
+  "name": "Chuppi - Auto Mute for Google Meet",
+  "description": "Automatically mutes your microphone and disables your camera when you join a Google Meet meeting.",
   "options_ui": {
     "page": "src/pages/options/index.html"
   },
