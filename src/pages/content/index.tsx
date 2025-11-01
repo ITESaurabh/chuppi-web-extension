@@ -1,20 +1,29 @@
-import { createRoot } from 'react-dom/client';
-import './style.css' 
-const div = document.createElement('div');
-div.id = '__root';
-document.body.appendChild(div);
+import { AutoMuteService } from '../../services/auto-mute';
+import './style.css';
 
-const rootContainer = document.querySelector('#__root');
-if (!rootContainer) throw new Error("Can't find Content root element");
-const root = createRoot(rootContainer);
-root.render(
-  <div className='absolute bottom-0 left-0 text-lg text-black bg-amber-400 z-50'  >
-    content script <span className='your-class'>loaded</span>
-  </div>
-);
+// Initialize auto-mute service
+let autoMuteService: AutoMuteService | null = null;
 
-try {
-  console.log('content script loaded');
-} catch (e) {
-  console.error(e);
+function initializeAutoMute() {
+  try {
+    console.log('[Chuppi] Content script loaded');
+    autoMuteService = new AutoMuteService();
+    autoMuteService.init();
+  } catch (e) {
+    console.error('[Chuppi] Error initializing auto-mute service:', e);
+  }
 }
+
+// Initialize when DOM is ready
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', initializeAutoMute);
+} else {
+  initializeAutoMute();
+}
+
+// Clean up on page unload
+window.addEventListener('beforeunload', () => {
+  if (autoMuteService) {
+    autoMuteService.destroy();
+  }
+});

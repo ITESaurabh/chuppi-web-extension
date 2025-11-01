@@ -1,181 +1,130 @@
 <div align="center">
 <img src="public/icon-128.png" alt="logo"/>
-<h1> Minimalist Chrome/Firefox Extension Boilerplate with<br/>React + Vite + TypeScript + TailwindCSS</h1>
-
-<h5>
-This template repository is a side product of my Chrome Extension <a target="_blank" rel="noopener noreferrer" href="https://chrome.google.com/webstore/detail/supatabs/icbcnjlaegndjabnjbaeihnnmidbfigk">Supatabs</a>.
-<br />
-If you tend to have tons of tabs open, or are a OneTab user, make sure to check it out <a target="_blank" rel="noopener noreferrer" href="https://chrome.google.com/webstore/detail/supatabs/icbcnjlaegndjabnjbaeihnnmidbfigk">here</a>!
-</h5>
-
-<h5>Supatabs is an example and showcase of what you can develop with this template. (anything you want, really 🚀)</h5>
-
+<h1>Chuppi - Auto Mute for Video Calls</h1>
+Automatically mute your microphone and disable your camera when joining video meetings. Works on your <b>first join</b> to each meeting, then lets you control your settings freely.
 </div>
 
-## Table of Contents
 
-- [Intro](#intro)
-- [Features](#features)
-- [Usage](#usage)
-  - [Getting Started](#gettingStarted) 
-  - [Customization](#customization)
-  - [Publish](#publish)
-- [Tech Docs](#tech)
-- [Credit](#credit)
-- [Contributing](#contributing)
+## ✨ Features
+
+- **🎯 Smart Auto-Mute**: Automatically mutes mic and camera only on first join
+- **🌐 Multi-Platform Support**: 
+  - ✅ Google Meet
+  - 🚧 Zoom (Not Ready)
+  - 🚧 Microsoft Teams (Not Ready)
+  - 🔧 Easy to add more platforms
+- **⚙️ Customizable Settings**:
+  - Enable/disable auto-mute globally
+  - Choose to mute mic only, camera only, or both
+  - Enable/disable per platform
+- **🔒 Privacy First**: All settings stored locally
+- **🚀 Lightweight**: Minimal performance impact
+- **🎨 Clean UI**: Simple and intuitive settings page
+
+## 🚀 Installation
+## Extension is still in development so for now its not available on webstores yet.. but will be soon!
+### Chrome/Edge
+1. Download or clone this repository
+2. Run `npm install` and `yarn build:chrome`
+3. Open `chrome://extensions/` (or `edge://extensions/`)
+4. Enable "Developer mode"
+5. Click "Load unpacked"
+6. Select the `dist_chrome` folder
+
+### Firefox
+1. Download or clone this repository
+2. Run `npm install` and `yarn build:firefox`
+3. Open `about:debugging#/runtime/this-firefox`
+4. Click "Load Temporary Add-on"
+5. Select any file in the `dist_firefox` folder
+
+## 📖 How It Works
+
+1. **First Join**: When you join a meeting for the first time, Chuppi automatically mutes your mic and/or camera based on your settings
+2. **User Control**: After auto-mute, you can toggle your mic and camera freely
+3. **New Meetings**: Each new meeting session will auto-mute again
+
+## ⚙️ Configuration
+
+### Access Settings
+Click the extension icon and go to "Options" or right-click → "Options"
+
+### Available Settings
+
+#### General Settings
+- **Enable Auto-Mute**: Master switch for the extension
+- **Mute Microphone**: Auto-mute microphone on first join
+- **Disable Camera**: Auto-disable camera on first join
+
+#### Platform Settings
+Enable or disable auto-mute for specific platforms:
+- Google Meet
+- Zoom
+- Microsoft Teams
+
+## 🐛 Troubleshooting
+
+### Auto-mute not working
+1. Check browser console for `[Chuppi]` logs
+2. Verify platform is enabled in settings
+3. Check if selectors are correct (platforms update their UI)
+4. Clear localStorage and try again
+
+### Buttons not found
+- Platform may have updated their UI
+- Check DevTools to find new selectors
+- Update platform configuration
+
+### Extension not loading
+- Verify all dependencies are installed
+- Rebuild the extension
+- Check for TypeScript errors
+
+## 🤝 Contributing
+
+Contributions are welcome! Especially:
+- New platform configurations
+- Bug fixes
+- UI improvements
+- Documentation
+
+### How to Contribute
+1. Fork the repository
+2. Create a feature branch
+3. Make your changes
+4. Test thoroughly
+5. Submit a pull request
 
 
-## Intro <a name="intro"></a>
-This boilerplate is meant to be a minimal quick start for creating chrome/firefox extensions using React, Typescript and Tailwind CSS.
+## 🔐 Privacy
 
-It includes all possible pages such as **new tab**, **dev panel**, **pop up**, etc., as well as corresponding manifest settings by default.
-You will likely have to customize/delete some of the pages (see docs below).
+- **No data collection**: Nothing is sent to external servers
+- **Local storage only**: All settings stored in browser
+- **No tracking**: No analytics or telemetry
+- **Open source**: Full transparency
 
-You can build dist files for both Chrome and Firefox with manifest v3.
+## 📄 License
 
-If you are looking for a React focused way to access the local storage, I also implemented a chrome local/sync storage hook. The hook works
-well with this template. [Check it out here](https://gist.github.com/JohnBra/c81451ea7bc9e77f8021beb4f198ab96).
+MIT License - see [LICENSE](./LICENSE) file
 
-## Features <a name="features"></a>
-- [React 19](https://reactjs.org/)
-- [TypeScript](https://www.typescriptlang.org/)
-- [Tailwind CSS 4](https://tailwindcss.com/)
-- [i18n (optional)](https://developer.chrome.com/docs/extensions/reference/api/i18n)
-- [Cross browser development with polyfill (optional)](https://github.com/mozilla/webextension-polyfill?tab=readme-ov-file#basic-setup-with-module-bundlers)
-- [ESLint](https://eslint.org/)
-- [Chrome Extension Manifest Version 3](https://developer.chrome.com/docs/extensions/mv3/intro/)
-- [Github Action](https://github.com/JohnBra/vite-web-extension/actions/workflows/ci.yml) to build and zip your extension (manual trigger)
+## 🙏 Acknowledgments
 
-## Usage <a name="usage"></a>
+- Built with [Vite](https://vitejs.dev/), [React](https://react.dev/)
+- Project bootstrapped on [JohnBra/vite-web-extension](https://github.com/JohnBra/vite-web-extension) (thanks to make my journey easy!)
+- Inspired by the need for privacy in video calls
 
-### Getting Started <a name="gettingStarted"></a>
+## 📧 Support
 
-#### Developing and building
-This template comes with build configs for both Chrome and Firefox. Running
-`dev` or `build` commands without specifying the browser target will build
-for Chrome by default.
+- Issues: [GitHub Issues](https://github.com/ITESaurabh/chuppi-web-extension/issues)
+- Questions: Create a discussion
 
-1. Clone this repository or click "Use this template"
-2. Change `name` and `description` in `manifest.json`
-3. Run `yarn` or `npm i` (check your node version >= 16)
-4. Run `yarn dev[:chrome|:firefox]`, or `npm run dev[:chrome|:firefox]`
+---
 
-Running a `dev` command will build your extension and watch for changes in the 
-source files. Changing the source files will refresh the corresponding 
-`dist_<chrome|firefox>` folder.
-
-To create an optimized production build, run `yarn build[:chrome|:firefox]`, or
-`npm run build[:chrome|:firefox]`.
-
-#### Load your extension
-For Chrome
-1. Open - Chrome browser
-2. Access - [chrome://extensions](chrome://extensions)
-3. Tick - Developer mode
-4. Find - Load unpacked extension
-5. Select - `dist_chrome` folder in this project (after dev or build)
-
-For Firefox
-1. Open - Firefox browser
-2. Access - [about:debugging#/runtime/this-firefox](about:debugging#/runtime/this-firefox)
-3. Click - Load temporary Add-on
-4. Select - any file in `dist_firefox` folder (i.e. `manifest.json`) in this project (after dev or build)
-
-### Customization <a name="customization"></a>
-
-#### Adding / removing pages
-The template includes source code for **all** of the extension pages (i.e. New Tab, Dev Tools, Popup, Side Panel
-etc.). You will likely have to customize it to fit your needs.
-
-E.g. you don't want the newtab page to activate whenever you open a new tab:
-1. remove the directory `newtab` and its contents in `src/pages`
-2. remove `chrome_url_overrides: { newtab: 'src/pages/newtab/index.html' },` in `manifest.json`
-
-Some pages like the "Side Panel" don't work the exact same in Chrome and Firefox. While this template includes
-the source code for the side panel, it won't automatically be included in the dist file to prevent cross browser
-build warnings.
-
-To include the side panel for Chrome add the following to the `manifest.json`:
-
-```typescript
-{
-  "manifest_version": 3,
-  // ...
-  "permissions": [
-    "activeTab",
-    "sidePanel" // <-- permission for sidepanel
-  ],
-  // ...
-  "side_panel": {
-    "default_path": "src/pages/panel/index.html" // <-- tell vite to include it in the build files
-  },
-  // ...
-}
-```
-
-If you need to declare pages in addition to the manifest pages, e.g. a custom `app` page, create a 
-new folder in the `pages` directory and add the corresponding `.html`, `.tsx` and `.css` 
-files (see `options/*` for an example to copy). Then include the root html in the `vite.config.base.ts` 
-file under `build.rollupOptions.input` like so:
-
-```typescript
-// ...
-build: {
-   rollupOptions: {
-      input: {
-         app: resolve(pagesDir, "app", "index.html"),
-      },
-      output: {
-         entryFileNames: (chunk) => `src/pages/${chunk.name}/index.js`,
-      },
-   },
-}
-// ...
-```
-
-#### Styling
-CSS files in the `src/pages/*` directories are not necessary. They are left in there in case you want 
-to use it in combination with Tailwind CSS. **Feel free to delete them**.
-
-Tailwind can be configured, themed and extended according to the [docs](https://tailwindcss.com/docs/theme).
-
-#### Internationalization (i18n)
-To enable internationalization set the `localize` flag in the `vite.config.base.ts` to `true`.
-
-The template includes a directory `locales` with a basic setup for english i18n. Enabling i18n
-will pull the name and description for your extension from the english translation files instead
-of the manifest.
-
-Follow the instructions in the [official docs](https://developer.chrome.com/docs/extensions/reference/api/i18n#description) 
-to add other translations and retrieve them in the extension.
-
-If you don't need i18n you can ignore the `locales` directory until you need it, as it won't
-be copied into the build folder unless the `localize` flag is set to `true`.
-
-### Publish your extension to the CWS<a name="publish"></a>
-To upload an extension to the Chrome store you have to pack (zip) it and then upload it to your item 
-in the Chrome Web Store.
-
-This repo includes a Github Action Workflow to create a 
-[optimized prod build and the zip file](https://github.com/JohnBra/vite-web-extension/actions/workflows/ci.yml).
-
-To run the workflow do the following:
-1. Go to the **"Actions"** tab in your forked repository from this template
-2. In the left sidebar click on **"Build and Zip Chrome Extension"**
-3. Click on **"Run Workflow"** and select the main branch, then **"Run Workflow"**
-4. Refresh the page and click the most recent run
-5. In the summary page **"Artifacts"** section click on the generated **"vite-web-extension-chrome"**
-6. Upload this file to the Chrome Web Store as described [here](https://developer.chrome.com/docs/webstore/publish/)
-
-# Tech Docs <a name="tech"></a>
-- [Vite](https://vitejs.dev/)
-- [Vite Plugins](https://vitejs.dev/guide/api-plugin.html)
-- [Chrome Extension with manifest 3](https://developer.chrome.com/docs/extensions/mv3/)
-- [Chrome Extension i18n](https://developer.chrome.com/docs/extensions/reference/api/i18n#description)
-- [Cross browser development with webextension-polyfill](https://github.com/mozilla/webextension-polyfill?tab=readme-ov-file#webextension-browser-api-polyfill)
-- [@crxjs/vite-plugin](https://crxjs.dev/vite-plugin)
-- [Rollup](https://rollupjs.org/guide/en/)
-- [Tailwind CSS 4](https://tailwindcss.com/docs/configuration)
+**Note**: This extension works by simulating button clicks on the video platform's UI. Platform UI changes may require updates to selectors. Contributions to keep selectors up-to-date are appreciated!
 
 # Contributing <a name="contributing"></a>
 Feel free to open PRs or raise issues!
+
+# More info for nerds
+- [README for Power Users](./README_ADVANCED.md)
+- [PLATFORM GUIDE for developers](./PLATFORM_GUIDE.md)
