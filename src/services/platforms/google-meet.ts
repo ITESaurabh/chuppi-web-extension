@@ -16,11 +16,17 @@ export const googleMeetConfig: PlatformConfig = {
     // Google Meet meeting codes are either 3 groups (xxx-xxxx-xxx) or 4 groups (xxxx-xxxx)
     // Common patterns: /bap-zgqa-jgr or /xzj-jrod-kvw
     const path = new URL(u).pathname.replace(/^\//, "");
-    // path may contain additional segments or be empty
+    const firstSegment = path.split("/")[0] || "";
+    
+    // Special case: /new is valid as it redirects to a meeting with an ID
+    if (firstSegment === "new") {
+      return true;
+    }
+    
     // Accept ids that match groups of letters/numbers separated by hyphens of length 3 or 4 segments
     const meetIdRegex =
       /^([a-z0-9]{3}-[a-z0-9]{4}-[a-z0-9]{3}|[a-z0-9]{3}-[a-z0-9]{3}-[a-z0-9]{3}|[a-z0-9]{4}-[a-z0-9]{4})$/i;
-    return meetIdRegex.test(path.split("/")[0] || "");
+    return meetIdRegex.test(firstSegment);
   },
   selectors: {
     // Indicators to detect which screen we're on
