@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import LogoSVG from "@assets/img/logo.svg";
+import LogoInactiveSVG from "@assets/img/logo-inactive.svg";
 import GetSupportDarkSVG from "@assets/svgs/get-support-dark.svg";
 import GetSupportLightSVG from "@assets/svgs/get-support-light.svg";
 import GithubLogoLighSVG from "@assets/svgs/github-light.svg";
@@ -12,6 +13,8 @@ import CameraDarkSVG from "@assets/svgs/camera-dark.svg";
 import CameraLightSVG from "@assets/svgs/camera-light.svg";
 import SmileDarkSVG from "@assets/svgs/smile-dark.svg";
 import SmileLightSVG from "@assets/svgs/smile-light.svg";
+import { SettingsService } from "@src/services/settings";
+import { sendMessageToActiveTab, MessageType } from "@src/services/messaging";
 
 export default function Popup() {
   const [isEnabled, setIsEnabled] = useState(true);
@@ -21,6 +24,17 @@ export default function Popup() {
     window.matchMedia("(prefers-color-scheme: dark)").matches
   );
 
+  // Load settings from storage on mount
+  useEffect(() => {
+    const loadSettings = async () => {
+      const settings = await SettingsService.getSettings();
+      setIsEnabled(settings.enabled);
+      setMuteMicrophone(settings.muteMic);
+      setMuteCamera(settings.muteCamera);
+    };
+    loadSettings();
+  }, []);
+
   useEffect(() => {
     const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
     const handleChange = (e: MediaQueryListEvent) => setIsDarkMode(e.matches);
@@ -28,6 +42,49 @@ export default function Popup() {
     mediaQuery.addEventListener("change", handleChange);
     return () => mediaQuery.removeEventListener("change", handleChange);
   }, []);
+
+  // Handle main toggle change
+  const handleMainToggle = async () => {
+    const newEnabled = !isEnabled;
+    setIsEnabled(newEnabled);
+    await SettingsService.updateSetting("enabled", newEnabled);
+
+    // Notify content script of settings change
+    await sendMessageToActiveTab({
+      type: MessageType.SETTINGS_UPDATED,
+      payload: { enabled: newEnabled },
+    });
+  };
+
+  // Handle microphone toggle change
+  const handleMicToggle = async () => {
+    if (!isEnabled) return; // Don't allow changes when main toggle is off
+
+    const newMuteMic = !muteMicrophone;
+    setMuteMicrophone(newMuteMic);
+    await SettingsService.updateSetting("muteMic", newMuteMic);
+
+    // Notify content script of settings change
+    await sendMessageToActiveTab({
+      type: MessageType.SETTINGS_UPDATED,
+      payload: { muteMic: newMuteMic },
+    });
+  };
+
+  // Handle camera toggle change
+  const handleCameraToggle = async () => {
+    if (!isEnabled) return; // Don't allow changes when main toggle is off
+
+    const newMuteCamera = !muteCamera;
+    setMuteCamera(newMuteCamera);
+    await SettingsService.updateSetting("muteCamera", newMuteCamera);
+
+    // Notify content script of settings change
+    await sendMessageToActiveTab({
+      type: MessageType.SETTINGS_UPDATED,
+      payload: { muteCamera: newMuteCamera },
+    });
+  };
   return (
     <div className="flex h-full flex-col bg-[#FFF9F0] dark:bg-[#1C1917] text-gray-900 dark:text-white transition-colors">
       {/* Header */}
@@ -93,24 +150,30 @@ export default function Popup() {
       </div>
 
       {/* Main Content */}
-      <div className="flex flex-grow flex-col items-center px-6 pt-5 pb-12">
+      <div className="flex flex-grow flex-col items-center px-6 pt-3">
         {/* Emoji Icon */}
         <div className="mb-4">
-          <img src={LogoSVG} alt="Chuppi Logo" className="w-25 h-25" />
+          <img
+            src={isEnabled ? LogoSVG : LogoInactiveSVG}
+            alt="Chuppi Logo"
+            className="w-25 h-25"
+          />
           {/* <div className="text-8xl">🤐</div> */}
         </div>
 
         {/* Website Info */}
-        <div className="text-center mb-12">
+        <div className="text-center">
           <p className="text-sm font-semibold text-gray-600 dark:text-gray-400 mb-2">
             meet.google.com
           </p>
-          <h2 className="text-2xl font-bold">Chuppi is Enabled</h2>
+          <h2 className="text-2xl font-bold">
+            {isEnabled ? "Chuppi is Enabled" : "Chuppi is Disabled"}
+          </h2>
         </div>
 
         {/* Toggle Switch */}
         <button
-          onClick={() => setIsEnabled(!isEnabled)}
+          onClick={handleMainToggle}
           className={`my-auto cursor-pointer relative w-28 h-14 rounded-full transition-colors duration-300 ease-in-out ${
             isEnabled
               ? "bg-gradient-to-r from-[#FF8C61] to-[#FF6B47]"
@@ -128,7 +191,11 @@ export default function Popup() {
       {/* Control Options */}
       <div className="px-4 space-y-3 mb-6">
         {/* Mute Microphone */}
-        <div className="flex items-center justify-between bg-white dark:bg-[#44403c] rounded-xl p-2 shadow-sm">
+        <div
+          className={`flex items-center justify-between bg-white dark:bg-[#44403c] rounded-xl p-2 shadow-sm ${
+            !isEnabled ? "opacity-50" : ""
+          }`}
+        >
           <div className="flex items-center gap-3">
             <img
               src={isDarkMode ? MicDarkSVG : MicLightSVG}
@@ -139,23 +206,30 @@ export default function Popup() {
             </span>
           </div>
           <button
-            onClick={() => setMuteMicrophone(!muteMicrophone)}
+            onClick={handleMicToggle}
+            disabled={!isEnabled}
             className={`cursor-pointer relative w-11 h-6 rounded-full transition-colors duration-300 ease-in-out ${
-              muteMicrophone
+              muteMicrophone && isEnabled
                 ? "bg-gradient-to-r from-[#FF8C61] to-[#FF6B47]"
                 : "bg-gray-300 dark:bg-[#646467]"
-            }`}
+            } ${!isEnabled ? "cursor-not-allowed" : ""}`}
           >
             <div
               className={`absolute top-0.5 w-5 h-5 bg-white rounded-full shadow-md transition-transform duration-300 ease-in-out ${
-                muteMicrophone ? "translate-x-[22px]" : "translate-x-0.5"
+                muteMicrophone && isEnabled
+                  ? "translate-x-[22px]"
+                  : "translate-x-0.5"
               }`}
             />
           </button>
         </div>
 
         {/* Mute Camera */}
-        <div className="flex items-center justify-between bg-white dark:bg-[#44403c] rounded-xl p-2 shadow-sm">
+        <div
+          className={`flex items-center justify-between bg-white dark:bg-[#44403c] rounded-xl p-2 shadow-sm ${
+            !isEnabled ? "opacity-50" : ""
+          }`}
+        >
           <div className="flex items-center gap-3">
             <img
               src={isDarkMode ? CameraDarkSVG : CameraLightSVG}
@@ -166,16 +240,19 @@ export default function Popup() {
             </span>
           </div>
           <button
-            onClick={() => setMuteCamera(!muteCamera)}
+            onClick={handleCameraToggle}
+            disabled={!isEnabled}
             className={`cursor-pointer relative w-11 h-6 rounded-full transition-colors duration-300 ease-in-out ${
-              muteCamera
+              muteCamera && isEnabled
                 ? "bg-gradient-to-r from-[#FF8C61] to-[#FF6B47]"
                 : "bg-gray-300 dark:bg-[#646467]"
-            }`}
+            } ${!isEnabled ? "cursor-not-allowed" : ""}`}
           >
             <div
               className={`absolute top-0.5 w-5 h-5 bg-white rounded-full shadow-md transition-transform duration-300 ease-in-out ${
-                muteCamera ? "translate-x-[22px]" : "translate-x-0.5"
+                muteCamera && isEnabled
+                  ? "translate-x-[22px]"
+                  : "translate-x-0.5"
               }`}
             />
           </button>

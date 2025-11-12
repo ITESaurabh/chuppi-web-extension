@@ -5,6 +5,10 @@
   "options_ui": {
     "page": "src/pages/options/index.html"
   },
+  "background": {
+    "service_worker": "src/pages/background/index.ts",
+    "type": "module"
+  },
   "action": {
     "default_popup": "src/pages/popup/index.html",
     "default_icon": {
@@ -40,7 +44,9 @@
       "resources": [
         "contentStyle.css",
         "icon-128.png",
-        "icon-32.png"
+        "icon-32.png",
+        "icon-inactive-128.png",
+        "icon-inactive-32.png"
       ],
       "matches": []
     }

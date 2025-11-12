@@ -176,12 +176,14 @@ export class AutoMuteService {
   /**
    * Mute microphone if not already muted
    */
-  private async muteMicrophone(): Promise<boolean> {
-    // Check if mic muting is enabled in settings
-    const micMuteEnabled = await SettingsService.isMicMuteEnabled();
-    if (!micMuteEnabled) {
-      console.log('[Chuppi] Microphone muting disabled in settings');
-      return true; // Return true to not block camera muting
+  private async muteMicrophone(force: boolean = false): Promise<boolean> {
+    // Check if mic muting is enabled in settings (unless forced)
+    if (!force) {
+      const micMuteEnabled = await SettingsService.isMicMuteEnabled();
+      if (!micMuteEnabled) {
+        console.log('[Chuppi] Microphone muting disabled in settings');
+        return true; // Return true to not block camera muting
+      }
     }
 
     const stateSelectors = this.getSelectorsForCurrentState();
@@ -237,12 +239,14 @@ export class AutoMuteService {
   /**
    * Disable camera if not already disabled
    */
-  private async disableCamera(): Promise<boolean> {
-    // Check if camera muting is enabled in settings
-    const cameraMuteEnabled = await SettingsService.isCameraMuteEnabled();
-    if (!cameraMuteEnabled) {
-      console.log('[Chuppi] Camera muting disabled in settings');
-      return true; // Return true to not block mic muting
+  private async disableCamera(force: boolean = false): Promise<boolean> {
+    // Check if camera muting is enabled in settings (unless forced)
+    if (!force) {
+      const cameraMuteEnabled = await SettingsService.isCameraMuteEnabled();
+      if (!cameraMuteEnabled) {
+        console.log('[Chuppi] Camera muting disabled in settings');
+        return true; // Return true to not block mic muting
+      }
     }
 
     const stateSelectors = this.getSelectorsForCurrentState();
@@ -347,6 +351,7 @@ export class AutoMuteService {
       }
 
       // Step 2: Attempt to mute based on current screen state
+      // Note: muteMicrophone() and disableCamera() check settings internally
       const micMuted = await this.muteMicrophone();
       const cameraMuted = await this.disableCamera();
 
@@ -441,5 +446,53 @@ export class AutoMuteService {
    */
   public destroy(): void {
     this.stopObserver();
+  }
+
+  /**
+   * Apply current settings to microphone and camera
+   * This can be called when settings change to immediately apply them
+   * Note: This only mutes, it does not unmute (user has manual control to unmute)
+   */
+  public async applyCurrentSettings(): Promise<void> {
+    if (!this.config) {
+      console.log('[Chuppi] Platform not supported');
+      return;
+    }
+
+    console.log('[Chuppi] Applying current settings...');
+
+    // Check if we're on a valid screen state
+    if (!this.isReadyToAutoMute()) {
+      console.log('[Chuppi] Not on a valid screen to apply settings');
+      return;
+    }
+
+    // Get current settings
+    const settings = await SettingsService.getSettings();
+    console.log('[Chuppi] Current settings:', settings);
+    
+    // Only proceed if globally enabled
+    if (!settings.enabled) {
+      console.log('[Chuppi] Auto-mute globally disabled');
+      return;
+    }
+
+    // Apply microphone setting - force=true to bypass internal settings check
+    if (settings.muteMic) {
+      console.log('[Chuppi] Applying microphone mute (muteMic=true)...');
+      await this.muteMicrophone(true);
+    } else {
+      console.log('[Chuppi] Microphone muting disabled (muteMic=false), skipping');
+    }
+
+    // Apply camera setting - force=true to bypass internal settings check
+    if (settings.muteCamera) {
+      console.log('[Chuppi] Applying camera mute (muteCamera=true)...');
+      await this.disableCamera(true);
+    } else {
+      console.log('[Chuppi] Camera muting disabled (muteCamera=false), skipping');
+    }
+
+    console.log('[Chuppi] Settings applied successfully');
   }
 }

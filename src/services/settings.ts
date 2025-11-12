@@ -44,15 +44,27 @@ export class SettingsService {
    */
   static async getSettings(): Promise<AutoMuteSettings> {
     try {
+      // Try chrome.storage.sync first (cross-browser sync)
+      if (typeof chrome !== 'undefined' && chrome.storage && chrome.storage.sync) {
+        const result = await chrome.storage.sync.get(SETTINGS_KEY);
+        if (result[SETTINGS_KEY]) {
+          console.log('[Chuppi] Loaded settings from chrome.storage.sync:', result[SETTINGS_KEY]);
+          return { ...DEFAULT_SETTINGS, ...result[SETTINGS_KEY] };
+        }
+      }
+      
+      // Fallback to localStorage for backwards compatibility
       const stored = localStorage.getItem(SETTINGS_KEY);
       if (stored) {
         const settings = JSON.parse(stored);
+        console.log('[Chuppi] Loaded settings from localStorage:', settings);
         // Merge with defaults to ensure all properties exist
         return { ...DEFAULT_SETTINGS, ...settings };
       }
     } catch (error) {
       console.error('[Chuppi] Error loading settings:', error);
     }
+    console.log('[Chuppi] Using default settings:', DEFAULT_SETTINGS);
     return DEFAULT_SETTINGS;
   }
 
@@ -61,7 +73,17 @@ export class SettingsService {
    */
   static async saveSettings(settings: AutoMuteSettings): Promise<void> {
     try {
-      localStorage.setItem(SETTINGS_KEY, JSON.stringify(settings));
+      console.log('[Chuppi] Saving settings:', settings);
+      
+      // Save to chrome.storage.sync if available
+      if (typeof chrome !== 'undefined' && chrome.storage && chrome.storage.sync) {
+        await chrome.storage.sync.set({ [SETTINGS_KEY]: settings });
+        console.log('[Chuppi] Settings saved to chrome.storage.sync');
+      } else {
+        // Fallback to localStorage
+        localStorage.setItem(SETTINGS_KEY, JSON.stringify(settings));
+        console.log('[Chuppi] Settings saved to localStorage');
+      }
     } catch (error) {
       console.error('[Chuppi] Error saving settings:', error);
       throw error;
