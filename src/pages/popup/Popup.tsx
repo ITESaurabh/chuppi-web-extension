@@ -21,6 +21,7 @@ export default function Popup() {
   const [isEnabled, setIsEnabled] = useState(true);
   const [muteMicrophone, setMuteMicrophone] = useState(true);
   const [muteCamera, setMuteCamera] = useState(true);
+  const [currentDomain, setCurrentDomain] = useState<string | null>(null);
   const [isDarkMode, setIsDarkMode] = useState(
     window.matchMedia("(prefers-color-scheme: dark)").matches
   );
@@ -34,6 +35,36 @@ export default function Popup() {
       setMuteCamera(settings.muteCamera);
     };
     loadSettings();
+  }, []);
+
+  // Get current tab domain
+  useEffect(() => {
+    const getCurrentTab = async () => {
+      if (typeof chrome !== 'undefined' && chrome.tabs) {
+        try {
+          const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
+          if (tab.url) {
+            const url = new URL(tab.url);
+            const hostname = url.hostname;
+            
+            // Check if it's a supported domain
+            if (hostname.includes('meet.google.com')) {
+              setCurrentDomain('Google Meet');
+            } else if (hostname.includes('zoom.us')) {
+              setCurrentDomain('Zoom');
+            } else if (hostname.includes('teams.microsoft.com')) {
+              setCurrentDomain('Microsoft Teams');
+            } else {
+              setCurrentDomain('Not a meeting page');
+            }
+          }
+        } catch (error) {
+          console.error('[Chuppi] Error getting current tab:', error);
+          setCurrentDomain('Unknown');
+        }
+      }
+    };
+    getCurrentTab();
   }, []);
 
   useEffect(() => {
@@ -179,13 +210,12 @@ export default function Popup() {
             alt="Chuppi Logo"
             className="w-25 h-25"
           />
-          {/* <div className="text-8xl">🤐</div> */}
         </div>
 
         {/* Website Info */}
         <div className="text-center">
           <p className="text-sm font-semibold text-gray-600 dark:text-gray-400 mb-2">
-            meet.google.com
+            {currentDomain || 'Loading...'}
           </p>
           <h2 className="text-2xl font-bold">
             {isEnabled ? "Chuppi is Enabled" : "Chuppi is Disabled"}

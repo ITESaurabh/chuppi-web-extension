@@ -25,9 +25,7 @@
   "content_scripts": [
     {
       "matches": [
-        "https://meet.google.com/*",
-        "https://*.zoom.us/*",
-        "https://teams.microsoft.com/*"
+        "https://meet.google.com/*"
       ],
       "js": [
         "src/pages/content/index.tsx"
