@@ -47,7 +47,7 @@ Automatically mute your microphone and disable your camera when joining video me
 ## ⚙️ Configuration
 
 ### Access Settings
-Click the extension icon and go to "Options" or right-click → "Options"
+Click the extension icon and go to "gear/cog" Icon Button or right-click the extension → "Options / Extension Options"
 
 ### Available Settings
 
@@ -105,7 +105,7 @@ Contributions are welcome! Especially:
 
 ## 📄 License
 
-MIT License - see [LICENSE](./LICENSE) file
+GNU General Public License v3.0 License - see [LICENSE](./LICENSE) file
 
 ## 🙏 Acknowledgments
 

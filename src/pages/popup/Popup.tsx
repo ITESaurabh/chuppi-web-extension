@@ -15,6 +15,7 @@ import SmileDarkSVG from "@assets/svgs/smile-dark.svg";
 import SmileLightSVG from "@assets/svgs/smile-light.svg";
 import { SettingsService } from "@src/services/settings";
 import { sendMessageToActiveTab, MessageType } from "@src/services/messaging";
+import { LINKS, openInNewTab } from "@src/constants/config";
 
 export default function Popup() {
   const [isEnabled, setIsEnabled] = useState(true);
@@ -85,6 +86,17 @@ export default function Popup() {
       payload: { muteCamera: newMuteCamera },
     });
   };
+
+  // Handle external link clicks
+  const handleSupportClick = () => openInNewTab(LINKS.support);
+  const handleGithubClick = () => openInNewTab(LINKS.github);
+  const handleSettingsClick = () => {
+    if (typeof chrome !== "undefined" && chrome.runtime) {
+      chrome.runtime.openOptionsPage();
+    }
+  };
+  const handleRateClick = () => openInNewTab(LINKS.chromeWebStore);
+
   return (
     <div className="flex h-full flex-col bg-[#FFF9F0] dark:bg-[#1C1917] text-gray-900 dark:text-white transition-colors">
       {/* Header */}
@@ -92,7 +104,10 @@ export default function Popup() {
         <h1 className="text-lg font-bold tracking-tighter">Chuppi</h1>
         <div className="flex items-center gap-3">
           <div className="relative w-fit">
-            <button className="peer ... cursor-pointer w-9 h-9 flex items-center justify-center rounded-lg bg-white dark:bg-[#c30000] hover:bg-gray-100 dark:hover:bg-[#6c0808] shadow-md dark:shadow-none transition-colors">
+            <button
+              onClick={handleSupportClick}
+              className="peer ... cursor-pointer w-9 h-9 flex items-center justify-center rounded-lg bg-white dark:bg-[#c30000] hover:bg-gray-100 dark:hover:bg-[#6c0808] shadow-md dark:shadow-none transition-colors"
+            >
               <img
                 src={isDarkMode ? GetSupportDarkSVG : GetSupportLightSVG}
                 className="h-5 pointer-events-none"
@@ -111,7 +126,10 @@ export default function Popup() {
 
           {/* GitHub Icon */}
           <div className="relative w-fit">
-            <button className="peer ... cursor-pointer w-9 h-9 flex items-center justify-center rounded-lg bg-white dark:bg-[#38383c] hover:bg-gray-100 dark:hover:bg-[#505053] shadow-md dark:shadow-none transition-colors">
+            <button
+              onClick={handleGithubClick}
+              className="peer ... cursor-pointer w-9 h-9 flex items-center justify-center rounded-lg bg-white dark:bg-[#38383c] hover:bg-gray-100 dark:hover:bg-[#505053] shadow-md dark:shadow-none transition-colors"
+            >
               <img
                 src={isDarkMode ? GithubLogoDarkSVG : GithubLogoLighSVG}
                 className="h-5 pointer-events-none"
@@ -130,7 +148,10 @@ export default function Popup() {
 
           {/* Settings Icon */}
           <div className="relative w-fit">
-            <button className="peer ... cursor-pointer w-9 h-9 flex items-center justify-center rounded-lg bg-white dark:bg-[#38383c] hover:bg-gray-100 dark:hover:bg-[#505053] shadow-md dark:shadow-none transition-colors">
+            <button
+              onClick={handleSettingsClick}
+              className="peer ... cursor-pointer w-9 h-9 flex items-center justify-center rounded-lg bg-white dark:bg-[#38383c] hover:bg-gray-100 dark:hover:bg-[#505053] shadow-md dark:shadow-none transition-colors"
+            >
               <img
                 src={isDarkMode ? SettingsDarkSVG : SettingsLightSVG}
                 className="h-5 pointer-events-none"
@@ -260,12 +281,15 @@ export default function Popup() {
       </div>
 
       {/* Footer Banner */}
-      <div className="bg-[#FDE047] dark:bg-[#646467] px-4 py-2 flex items-center justify-between">
+      <div className="bg-[#FDE047] dark:bg-[#646467] px-4 py-2 flex items-center justify-between hidden">
         <p className="text-sm font-medium text-gray-900 dark:text-white">
           Do you like Chuppi?
         </p>
         <div className="flex items-center gap-3">
-          <button className="cursor-pointer px-2.5 py-1.5 bg-[#FF8C61] hover:bg-[#FF6B47] dark:hover:bg-[#535354] dark:bg-[#414145] text-white rounded-lg font-medium transition-colors tracking-wider">
+          <button
+            onClick={handleRateClick}
+            className="cursor-pointer px-2.5 py-1.5 bg-[#ec8e4c] hover:bg-[#ef9e64] dark:hover:bg-[#535354] dark:bg-[#414145] text-white rounded-lg font-medium transition-colors tracking-wider"
+          >
             Rate it!
           </button>
           <img
