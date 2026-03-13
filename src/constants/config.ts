@@ -13,7 +13,7 @@
  * 
  * Once you have it, replace 'YOUR_EXTENSION_ID_HERE' with your actual ID
  */
-export const CHROME_EXTENSION_ID = 'YOUR_EXTENSION_ID_HERE';
+export const CHROME_EXTENSION_ID = 'igdijbinnfejpfhkljlbacgadngopgpo';
 
 /**
  * External links for the extension

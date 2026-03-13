@@ -311,7 +311,7 @@ export default function Popup() {
       </div>
 
       {/* Footer Banner */}
-      <div className="bg-[#FDE047] dark:bg-[#646467] px-4 py-2 flex items-center justify-between hidden">
+      <div className="bg-[#FDE047] dark:bg-[#646467] px-4 py-2 flex items-center justify-between">
         <p className="text-sm font-medium text-gray-900 dark:text-white">
           Do you like Chuppi?
         </p>

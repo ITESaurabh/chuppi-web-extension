@@ -46,12 +46,12 @@ export const googleMeetConfig: PlatformConfig = {
     // Selectors for preview screen (div with role="button")
     preview: {
       mic: [
-        'div[role="button"][aria-label="Turn off microphone"]',
-        'div[role="button"][aria-label="Turn on microphone"]',
+        'button[role="button"][aria-label="Turn off microphone"]',
+        'button[role="button"][aria-label="Turn on microphone"]',
       ],
       camera: [
-        'div[role="button"][aria-label="Turn off camera"]',
-        'div[role="button"][aria-label="Turn on camera"]',
+        'button[role="button"][aria-label="Turn off camera"]',
+        'button[role="button"][aria-label="Turn on camera"]',
       ],
     },
     // Selectors for joined screen (button elements)
